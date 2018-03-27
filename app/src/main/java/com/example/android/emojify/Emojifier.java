@@ -29,6 +29,9 @@ import com.google.android.gms.vision.face.FaceDetector;
 class Emojifier {
 
     private static final String LOG_TAG = Emojifier.class.getSimpleName();
+    private static final double SMILE_TRESHOLD = 0.30;
+    private static final double LEFT_EYE_OPEN_TRESHOLD = 0.55;
+    private static final double RIGHT_EYE_OPEN_TRESHOLD = 0.55;
 
     /**
      * Method for detecting faces in a bitmap.
@@ -89,54 +92,31 @@ class Emojifier {
         Log.d(LOG_TAG, "whichEmoji: rightEyeOpenProb = " + rightEyeOpenProb);
 
         // TODO (3): Create threshold constants for a person smiling, and and eye being open by taking pictures of yourself and your friends and noting the logs.
-        final float SMILE_TRESHOLD = 0.30F;
-        final float LEFT_EYE_OPEN_TRESHOLD = 0.55F;
-        final float RIGHT_EYE_OPEN_TRESHOLD = 0.55F;
         // TODO (4): Create 3 boolean variables to track the state of the facial expression based on the thresholds you set in the previous step: smiling, left eye closed, right eye closed.
-        boolean isSmiling = facialExpressionHandler(smileProb, SMILE_TRESHOLD);
-        boolean isLeftEyeOpen = facialExpressionHandler(leftEyeOpenProb, LEFT_EYE_OPEN_TRESHOLD);
-        boolean isRightEyeOpen = facialExpressionHandler(rightEyeOpenProb, RIGHT_EYE_OPEN_TRESHOLD);
+        boolean isSmiling = smileProb > SMILE_TRESHOLD;
+        boolean isLeftEyeOpen = leftEyeOpenProb > LEFT_EYE_OPEN_TRESHOLD;
+        boolean isRightEyeOpen = rightEyeOpenProb > RIGHT_EYE_OPEN_TRESHOLD;
 
         // TODO (5): Create an if/else system that selects the appropriate emoji based on the above booleans and log the result.
-         /*
-    Create an enum class called Emoji that contains all the possible emoji you can make (
-    smiling,
-    frowning,
-    left wink,
-    right wink,
-    left wink frowning,
-    right wink frowning,
-    closed eye smiling,
-    close eye frowning).
-     */
-         String facialExpression = "";
+         Emoji emoji;
          if (isSmiling && isLeftEyeOpen && isRightEyeOpen) {
-             facialExpression = Emoji.SMILING.toString();
+             emoji = Emoji.SMILING;
          } else if (!isSmiling && isLeftEyeOpen && isRightEyeOpen) {
-             facialExpression = Emoji.FROWNING.toString();
+             emoji = Emoji.FROWNING;
          } else if (isSmiling && !isLeftEyeOpen && isRightEyeOpen) {
-             facialExpression = Emoji.LEFT_WINK.toString();
+             emoji = Emoji.LEFT_WINK;
          } else if (isSmiling && isLeftEyeOpen && !isRightEyeOpen) {
-             facialExpression = Emoji.RIGHT_WINK.toString();
+             emoji = Emoji.RIGHT_WINK;
          } else if (!isSmiling && !isLeftEyeOpen && isRightEyeOpen) {
-             facialExpression = Emoji.LEFT_WINK_FROWNING.toString();
+             emoji = Emoji.LEFT_WINK_FROWNING;
          } else if (!isSmiling && isLeftEyeOpen && !isRightEyeOpen) {
-             facialExpression = Emoji.RIGHT_WINK_FROWNING.toString();
+             emoji = Emoji.RIGHT_WINK_FROWNING;
          } else if (isSmiling && !isLeftEyeOpen && !isRightEyeOpen) {
-             facialExpression = Emoji.CLOSED_EYE_SMILING.toString();
+             emoji = Emoji.CLOSED_EYE_SMILING;
          } else {
-             facialExpression = Emoji.CLOSED_EYE_FROWNING.toString();
+             emoji = Emoji.CLOSED_EYE_FROWNING;
          }
-         Log.d(LOG_TAG, "whichEmoji: facialExpression = " + facialExpression);
+         Log.d(LOG_TAG, "whichEmoji: " + emoji.name());
     }
-
-    private static boolean facialExpressionHandler(float probability, float threshold) {
-        if (probability > threshold) {
-            return true;
-        }
-        return false;
-    }
-
-
     // TODO (1): Create an enum class called Emoji that contains all the possible emoji you can make (smiling, frowning, left wink, right wink, left wink frowning, right wink frowning, closed eye smiling, close eye frowning).
 }
