@@ -61,7 +61,7 @@ class Emojifier {
                 Face face = faces.valueAt(i);
 
                 // Log the classification probabilities for each face.
-                getClassifications(face);
+                whichEmoji(face);
                 // TODO (6): Change the call to getClassifications to whichEmoji() to log the appropriate emoji for the facial expression.
             }
 
@@ -78,18 +78,63 @@ class Emojifier {
      *
      * @param face The face to get the classification probabilities.
      */
-    private static void getClassifications(Face face){
+    private static void whichEmoji(Face face){
         // TODO (2): Change the name of the getClassifications() method to whichEmoji() (also change the log statements)
+        float smileProb = face.getIsSmilingProbability();
+        float leftEyeOpenProb = face.getIsLeftEyeOpenProbability();
+        float rightEyeOpenProb = face.getIsRightEyeOpenProbability();
         // Log all the probabilities
-        Log.d(LOG_TAG, "getClassifications: smilingProb = " + face.getIsSmilingProbability());
-        Log.d(LOG_TAG, "getClassifications: leftEyeOpenProb = "
-                + face.getIsLeftEyeOpenProbability());
-        Log.d(LOG_TAG, "getClassifications: rightEyeOpenProb = "
-                + face.getIsRightEyeOpenProbability());
+        Log.d(LOG_TAG, "whichEmoji: smilingProb = " + smileProb);
+        Log.d(LOG_TAG, "whichEmoji: leftEyeOpenProb = " + leftEyeOpenProb);
+        Log.d(LOG_TAG, "whichEmoji: rightEyeOpenProb = " + rightEyeOpenProb);
 
         // TODO (3): Create threshold constants for a person smiling, and and eye being open by taking pictures of yourself and your friends and noting the logs.
+        final float SMILE_TRESHOLD = 0.30F;
+        final float LEFT_EYE_OPEN_TRESHOLD = 0.55F;
+        final float RIGHT_EYE_OPEN_TRESHOLD = 0.55F;
         // TODO (4): Create 3 boolean variables to track the state of the facial expression based on the thresholds you set in the previous step: smiling, left eye closed, right eye closed.
+        boolean isSmiling = facialExpressionHandler(smileProb, SMILE_TRESHOLD);
+        boolean isLeftEyeOpen = facialExpressionHandler(leftEyeOpenProb, LEFT_EYE_OPEN_TRESHOLD);
+        boolean isRightEyeOpen = facialExpressionHandler(rightEyeOpenProb, RIGHT_EYE_OPEN_TRESHOLD);
+
         // TODO (5): Create an if/else system that selects the appropriate emoji based on the above booleans and log the result.
+         /*
+    Create an enum class called Emoji that contains all the possible emoji you can make (
+    smiling,
+    frowning,
+    left wink,
+    right wink,
+    left wink frowning,
+    right wink frowning,
+    closed eye smiling,
+    close eye frowning).
+     */
+         String facialExpression = "";
+         if (isSmiling && isLeftEyeOpen && isRightEyeOpen) {
+             facialExpression = Emoji.SMILING.toString();
+         } else if (!isSmiling && isLeftEyeOpen && isRightEyeOpen) {
+             facialExpression = Emoji.FROWNING.toString();
+         } else if (isSmiling && !isLeftEyeOpen && isRightEyeOpen) {
+             facialExpression = Emoji.LEFT_WINK.toString();
+         } else if (isSmiling && isLeftEyeOpen && !isRightEyeOpen) {
+             facialExpression = Emoji.RIGHT_WINK.toString();
+         } else if (!isSmiling && !isLeftEyeOpen && isRightEyeOpen) {
+             facialExpression = Emoji.LEFT_WINK_FROWNING.toString();
+         } else if (!isSmiling && isLeftEyeOpen && !isRightEyeOpen) {
+             facialExpression = Emoji.RIGHT_WINK_FROWNING.toString();
+         } else if (isSmiling && !isLeftEyeOpen && !isRightEyeOpen) {
+             facialExpression = Emoji.CLOSED_EYE_SMILING.toString();
+         } else {
+             facialExpression = Emoji.CLOSED_EYE_FROWNING.toString();
+         }
+         Log.d(LOG_TAG, "whichEmoji: facialExpression = " + facialExpression);
+    }
+
+    private static boolean facialExpressionHandler(float probability, float threshold) {
+        if (probability > threshold) {
+            return true;
+        }
+        return false;
     }
 
 
