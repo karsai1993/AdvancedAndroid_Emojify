@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -39,6 +40,10 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MainActivity extends AppCompatActivity {
 
     // TODO (2): Replace all View declarations with Butterknife annotations
@@ -48,13 +53,17 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String FILE_PROVIDER_AUTHORITY = "com.example.android.fileprovider";
 
+    @BindView(R.id.image_view)
     private ImageView mImageView;
-
+    @BindView(R.id.emojify_button)
     private Button mEmojifyButton;
+    @BindView(R.id.share_button)
     private FloatingActionButton mShareFab;
+    @BindView(R.id.save_button)
     private FloatingActionButton mSaveFab;
+    @BindView(R.id.clear_button)
     private FloatingActionButton mClearFab;
-
+    @BindView(R.id.title_text_view)
     private TextView mTitleTextView;
 
     private String mTempPhotoPath;
@@ -69,12 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO (3): Replace the findViewById calls with the Butterknife data binding
         // Bind the views
-        mImageView = (ImageView) findViewById(R.id.image_view);
-        mEmojifyButton = (Button) findViewById(R.id.emojify_button);
-        mShareFab = (FloatingActionButton) findViewById(R.id.share_button);
-        mSaveFab = (FloatingActionButton) findViewById(R.id.save_button);
-        mClearFab = (FloatingActionButton) findViewById(R.id.clear_button);
-        mTitleTextView = (TextView) findViewById(R.id.title_text_view);
+        ButterKnife.bind(this);
     }
 
     /**
@@ -199,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view The save button.
      */
+    @OnClick(R.id.save_button)
     public void saveMe(View view) {
         // Delete the temporary image file
         BitmapUtils.deleteImageFile(this, mTempPhotoPath);
@@ -212,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view The share button.
      */
+    @OnClick(R.id.share_button)
     public void shareMe(View view) {
         // Delete the temporary image file
         BitmapUtils.deleteImageFile(this, mTempPhotoPath);
@@ -228,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view The clear button.
      */
+    @OnClick(R.id.clear_button)
     public void clearImage(View view) {
         // Clear the image and toggle the view visibility
         mImageView.setImageResource(0);
